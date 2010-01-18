@@ -6,23 +6,26 @@
         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>        
 	</head>
 	<body>
-	    <div id="red" style="background:red;width:20px;height:20px;position:absolute;left:10px;top:10px;"></div>
-	    <div id="blue" style="background:blue;width:20px;height:20px;position:absolute;left:50px;top:10px;"></div>        
+	    <div id="whatsgoingon"></div>
+	    <div id="red" style="background:red;width:20px;height:20px;position:absolute;left:10px;top:30px;"></div>
+	    <div id="blue" style="background:blue;width:20px;height:20px;position:absolute;left:50px;top:30px;"></div>        
         <script type="text/javascript">
             (function($){
                 $.fn.frames = function(frames,props){    
-                    var fps = 30;    // Base things on 30 frames per second
+                    var fps = 60;    // Base things on 60 frames per second
                     var fps_interval = 1000 / fps;    // How often do we call our timeout in ms?
             
                     var anim = function(el,prop,delta,intvl){
-                        var val = parseFloat(el.css(prop));
+                        var domEl = el[0];                        
+                        var val = parseFloat(domEl.style[prop]);
                         var currentFrame = el.data('frame' + prop);
+                        
                         if(currentFrame == frames){
                             clearInterval(intvl);
                             return true;
                         }
                         else{
-                            el.css(prop, val + delta);
+                            domEl.style[prop] = val + delta + 'px';
                             el.data('frame'+ prop, ++currentFrame);
                         }
                     } 
@@ -51,6 +54,17 @@
                     return this;
                 }    
             }(jQuery));             
+        </script>
+        
+        <button id="runit">Run animations</button>
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $('#runit').click(function(){
+                    $('#whatsgoingon').append('<span>Red - to top:150, height:500, width:250 in 500 frames</span><br/><span>Blue - to top:450, height:250, width:250 in 1000 frames</span>');
+                    $('#red').frames(500, {top : 150, height : 500, width : 250 });    
+                    $('#blue').frames(1000, { top: 450, height : 250, width : 250 });
+                });    
+            });
         </script>
 	</body>
 </html>
