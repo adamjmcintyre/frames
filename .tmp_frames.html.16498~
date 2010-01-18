@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Untitled Document</title>
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.0/jquery.min.js"></script>        
+	</head>
+	<body>
+	    <div id="red" style="background:red;width:20px;height:20px;position:absolute;left:10px;top:10px;"></div>
+	    <div id="blue" style="background:blue;width:20px;height:20px;position:absolute;left:50px;top:10px;"></div>        
+        <script type="text/javascript">
+            (function($){
+                $.fn.frames = function(frames,props){    
+                    var fps = 30;    // Base things on 30 frames per second
+                    var fps_interval = 1000 / fps;    // How often do we call our timeout in ms?
+            
+                    var anim = function(el,prop,delta,intvl){
+                        var val = parseFloat(el.css(prop));
+                        var currentFrame = el.data('frame' + prop);
+                        if(currentFrame == frames){
+                            clearInterval(intvl);
+                            return true;
+                        }
+                        else{
+                            el.css(prop, val + delta);
+                            el.data('frame'+ prop, ++currentFrame);
+                        }
+                    } 
+                    
+                    var getAnim = function(el,prop,delta,itr,intvl){
+                        return function(){
+                            anim(el,prop,delta,itr);
+                        }
+                    }
+                                        
+                    this.each(function(){
+                        var self = $(this);
+                        
+                        for(var i in props){
+                            var p = props[i];
+                            var delta = (p - parseInt(self.css(i))) / frames;    // change in value per frame 
+                            var intvl;
+
+                            self.data('frame' + i,0);
+                            
+                            var a = getAnim(self,i,delta,intvl);
+                            intvl = setInterval(a,fps_interval);
+                        }
+                    });
+
+                    return this;
+                }    
+            }(jQuery));             
+        </script>
+	</body>
+</html>
